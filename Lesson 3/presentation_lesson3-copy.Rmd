@@ -1,0 +1,92 @@
+---
+title: "Summary of Half of Lesson 3 from Data Analysis with R"
+author: "Mingyu Lee"
+date: "Wednesday, September 02, 2015"
+output: slidy_presentation
+---
+
+## 3장에서 배울 내용
+
+- 한 데이터 세트의 단일 변수 조사 방법
+- 히스토그램과 시각화와 관련 R 명령어
+- 데이터에 접근하는 방법
+
+## 먼저 해야할 것은?
+
+- 탐색적 데이터 분석에 앞서, 연구의 목적을 돌이켜보고
+- **구하고자 하는 답에 대한 질문이 무엇인가?** 상기
+- 연구에서 가장 중요한 변수를 이해하기 위해서
+- 그 개별 변수들에 대한 요약과 시각화를 만드는 형태를 취할 것이다.
+
+## 가상 페이스북 유저데이터
+- 이번 3장에서는 가상의 페이스북 유저 데이터를 이용한다.
+- 강의 노트에서 *pseudo-facebook.tsv*를 다운 받는다. 
+- `getwd()` 명령어로 R에 설정된 현재 홈 디렉토리를 확인한다.
+- `setwd("주소")` 명령어로 홈 디렉토리를 설정할 수 있다.
+- **주의사항** 주소 경로는 '/' 로 구분한다.
+```{r}
+setwd("C:/Users/Mingyu/workspace/3. R/Data Analysis with R_Udacity/Lesson 3")
+getwd()
+list.files()
+```
+- `list.files()` 명령어로 홈 디렉토리 내의 파일 목록을 확인한다.
+- `read.csv()` 명령어로 *pseudo-facebook.tsv*를 불러온다.
+```{r}
+pf <- read.csv('pseudo_facebook.tsv', sep ='\t')
+```
+- `\t` 으로 구분하고, 불러온 데이터를 *pf* 변수에 담는다는 의미이다.
+
+
+## 데이터세트 컬럼 확인하기
+
+`names(pf)` 명령어로 pf 변수에 담긴 데이터세트의 컬럼 정보를 확인 할 수 있다.
+
+```{r}
+names(pf)
+```
+
+---
+
+## ggplot2을 이용한 히스토그램 작성
+- `install.packages("ggplot2")` 명령어로 ggplot2 패키지ㄹ 설치한다.
+- 설치가 완료되면 `library(ggplot2)` 명령어로 ggplot2 패키지를 로드한다.
+- 위에서 가상의 페이스북 데이터세트를 담고 있는 pf를 통해 히스토그램을 만들어보자.
+- `qplot()` 명령어를 사용한다
+- `qplot()`은 Quick plot의 약자로 ggplot2 패키지의 가장 기본적인 도표 작성 기능이다.
+```{r}
+library(ggplot2)
+qplot(x = dob_day, data = pf)
+```
+
+-  `qplot()`의 인자 중 *x*는 dob_day 변수의 데이터를 가져오고, *data*는 pf 데이터 세트를 가져온다는 의미이다.
+
+---
+
+## 정확한 히스토그램 작성
+- 일수는 1~31일인데, 히스토그램은 10단위로 뭉뚱그려 표시되므로 직관적이지 못하고 에러메시지 발생.
+- 에러메시지: **stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.**
+- x 축의 단위를 수정해보자
+```{r}
+qplot(x = dob_day, data = pf) + scale_x_discrete(breaks = 1:31)
+```
+
+---
+## (번외)히스토그램 꾸미기: ggthemes
+- `ggthemes()` 패키지를 사용하여 ggplot 패키지로 생성하는 도표들을 간단하게 꾸밀 수 있다. 
+```{r eval=FALSE}
+## CRAN에서 다운로드
+install.packages('ggthemes', dependencies = TRUE)
+## GitHub에서 다운로드
+library("devtools")
+install_github("jrnold/ggthemes")
+```
+```{r eval=FALSE}
+## 사용법 예제
+qplot(x = dob_day, data = pf) + geom_histogram() + theme_wsj() +ggtitle("Day of Birth of Facebook users") + scale_x_discrete(breaks = 1:31)
+
+```
+```{r}
+qplot(x = dob_day, data = pf) + geom_histogram() + theme_wsj() +ggtitle("Day of Birth of Facebook users") + scale_x_discrete(breaks = 1:31)
+
+```
+

@@ -1,0 +1,236 @@
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta authuor="Mingyu Lee">
+<meta generator="RStudio v0.99.473">
+<title>Lesson3_Data Analysis with R from Udacity_(1/2)</title>
+</head>
+
+<body>
+<!--begin.rcode setup, include=FALSE
+library(knitr)
+# to base64 encode images
+opts_knit$set(upload.fun = image_uri)
+end.rcode-->
+
+<h3> 3장에서 배울 내용 </h3>
+<ul>
+  <li>한 데이터 세트의 단일 변수 조사 방법</li>
+  <li>히스토그램과 시각화와 관련 R 명령어</li>
+  <li>데이터에 접근하는 방법</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>먼저 해야할 것은?</h3>
+<ul>
+<li>탐색적 데이터 분석에 앞서, 연구의 목적을 돌이켜보고</li>
+<li><b>구하고자 하는 답에 대한 질문이 무엇인가?</b> 상기</li>
+<li>연구에서 가장 중요한 변수를 이해하기 위해서</li>
+<li>그 변수들에 대한 요약과 시각화를 만드는 형태를 취할 것이다.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3> 가상 페이스북 유저데이터</h3>
+<ul>
+<li>이번 3장에서는 가상의 페이스북 유저 데이터를 이용한다.</li>
+<li>강의 노트에서 <b>pseudo-facebook.tsv</b>를 다운 받는다. </li>
+<li><code class="red">getwd()</code> 명령어로 R에 설정된 현재 홈 디렉토리를 확인한다.</li>
+<li><code class="red">setwd("주소")</code> 명령어로 홈 디렉토리를 설정할 수 있다.</li>
+<li><b><font color="red">주의사항:</font></b> 주소 경로는 <b>'/'</b> 로 구분한다.</li>
+</ul>
+<!--begin.rcode
+setwd("C:/Users/Mingyu/workspace/3. R/Data Analysis with R_Udacity/data_analysis_with_r_udacity/")
+getwd()
+end.rcode-->
+<ul>
+<li><code class="resd">list.files()</code> 명령어로 홈 디렉토리 내의 파일 목록을 확인한다.</li>
+</ul>
+<!--begin.rcode
+list.files();
+end.rcode-->
+<ul>
+<li> <code class="red">read.csv()</code> 명령어로 <b>pseudo-facebook.tsv</b>를 불러온다. </li>
+</ul>
+<!--begin.rcode
+pf <- read.csv('pseudo_facebook.tsv', sep ='\t')
+end.rcode-->
+<ul>
+<li><b>\t</b> 으로 구분하고, 불러온 데이터를 <b>pf</b> 변수에 담는다는 의미이다.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>데이터세트 컬럼 확인하기</h3>
+<ul>
+<li><code class="red">names(pf)</code> 명령어로 pf 변수에 담긴 데이터세트의 컬럼 정보를 확인 할 수 있다.</lie>
+</ul
+
+<!--begin.rcode
+names(pf)
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3>ggplot2을 이용한 히스토그램 작성</h3>
+<ul>
+<li><code class="red">install.packages("ggplot2")</code> 명령어로 ggplot2 패키지를 설치한다.</li>
+<li>설치가 완료되면 <code class="red">library(ggplot2)</code> 명령어로 ggplot2 패키지를 로드한다.</li>
+<li>위에서 가상의 페이스북 데이터세트를 담고 있는 pf를 통해 히스토그램을 만들어보자.</li>
+<li><code class="red">qplot()</code> 명령어를 사용한다</li>
+<li><code class="red">qplot()</code>은 Quick plot의 약자로 ggplot2 패키지의 가장 기본적인 도표 작성 기능이다.</li>
+</ul>
+<!--begin.rcode
+library(ggplot2)
+qplot(x = dob_day, data = pf)
+end.rcode-->
+<ul>
+<li><code class="red">qplot()</code>의 인자 중 <code class="blue">x</code>는 dob_day 변수의 데이터를 가져오고, <code claoss="blue">>data</code>는 pf 데이터 세트를 가져온다는 의미이다.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3> 정확한 히스토그램 작성</h3>
+<ul>
+<li>일수는 1~31일인데, 히스토그램은 10단위로 뭉뚱그려 표시되므로 직관적이지 못하고 에러메시지 발생.</li>
+<li>에러메시지: <b>stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.</b></li>
+<li>x 축의 단위를 수정해보자</li>
+</ul>
+<!--begin.rcode
+qplot(x = dob_day, data = pf) + scale_x_discrete(breaks = 1:31)
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3> (번외)히스토그램 꾸미기: ggthemes</h3>
+<ul>
+<li><code class="red">ggthemes()</code> 패키지를 사용하여 ggplot 패키지로 생성하는 도표들을 간단하게 꾸밀 수 있다. </li>
+</ul>
+
+<!--begin.rcode eval=FALSE
+## CRAN에서 다운로드
+install.packages('ggthemes', dependencies = TRUE)
+## GitHub에서 다운로드
+library("devtools")
+install_github("jrnold/ggthemes")
+end.rcode-->
+
+<!--begin.rcode
+library(ggthemes)
+qplot(x = dob_day, data = pf) + geom_histogram() + theme_wsj() +ggtitle("Day of Birth of Facebook users") + scale_x_discrete(breaks = 1:31)
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3>페이스북 직원 Moira의 연구</h3>
+<ul>
+<li>최근에 페이스북에서 청중들에 대한 사람들의 인식이 현실과 부합하는지 연구하고 있다.</li>
+<li>사람들이 공유한 콘텐츠를 실제 보는 사람은 누구인가?</li>
+<li>최근에 포스팅을 한 사람들을 대상으로 <b>얼마나 많은 사람들이 이 포스트를 본다고 생각하나?</b>라고 질문을 했다.</li>
+<li>그리고 실제로 단 몇초간이라도 그들의 포스팅을 본 사람들의 숫자를 세어보았다</li>
+<li>그 결과 사람들이 인식하는 청중들의 크기와 실 청중들의 크기는 달랐다.</li>
+<li>사람들의 예상은 실제 청중들의 크기의 1/4이다.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>Faceting(패싯기법)</h3>
+<ul>
+<li>앞서 만들었던 가상의 페이스북 데이터세트 pf에서 추출한 유저들의 생일 히스토그램을 월별로 분류한다.</li>
+<li><code class="red">facet_wrap()</code> 명령어를 사용한다.</li>
+</ul>
+<!--begin.rcode
+qplot(x = dob_day, data = pf) + scale_x_discrete(breaks = 1:31) + facet_wrap(~dob_month, ncol=3)
+end.rcode-->
+
+<!--begin.rcode eval=FALSE
+facet_wrap(가로축 데이터)
+facet_grid(가로축데이터~새로축 데이터)
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3>Axes(축)의 조정 </h3>
+<ul>
+<li>가상의 페이스북 데이터의 아웃라이어 데이터를 제외하고 의미있는 데이터만 분석하고자 한다.</li>
+<li>지정한 변수의 값을 제한하기 위하여 <code class="red">qplot()`</code>명령어에 <code class="blue">xlim</code> 인자를 추가하거나</li>
+<li><code class="red">scale_x_continuous(limits)</code> 명령어를 연결하여 사용한다.</li>
+</ul>
+
+<!--begin.rcode
+qplot(x = friend_count, data = pf, xlim = c(0, 1000))
+end.rcode-->
+
+<!--begin.rcode
+qplot(x= friend_count, data = pf) + scale_x_continuous(limits=c(0,1000))
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3> binwidth (빈 너비, 막대 저장 넓이)</h3>
+<ul>
+<li>조금 더 정확하게 히스토그램을 분석하기 위해서 x축 값의 단위를 작게 지정한다.</li>
+<li>또, <b>binwidth(막대 저장 넓이)</b>를 조정하여 더 작은 단위로 데이터를 분석할 수 있다.</li>
+</ul>
+<!--begin.rcode
+qplot(x = friend_count, data=pf, binwidth = 25) + scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50))
+end.rcode-->
+<ul>
+<li>binwidth를 더 쉽게 이해하기 위해 binwidth 값을 100으로 설정한 도표를 보자.</li>
+</ul>
+<!--begin.rcode
+qplot(x = friend_count, data=pf, binwidth = 100) + scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50))
+end.rcode-->
+<ul>
+<li>즉, 히스토그램의 막대가 포함하는 값들이 많아져 데이터가 뭉뚱그려 보여지게 된다.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>성별로 구분하기 </h3>
+<ul>
+<li>가상의 페이스북 유저 데이터의 친구 숫자 히스토그램을 성별로 나누어 보자.</li>
+</ul>
+<!--begin.rcode
+qplot(x = friend_count, data=pf, binwidth = 25) + scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + facet_wrap(~gender)
+end.rcode-->
+
+<br>
+<hr>
+<br>
+<h3> NA 제외하기: subset() 사용</h3>
+<ul>
+<li>성별 라벨에 체크를 하지 않은 유저들의 데이터는 NA로 저장되어있어 원치 않은 히스토그램이 생겨났다.</li>
+<li>NA를 제외한 결과를 볼 수 있게 명령문을 조정하자</li>
+</ul>
+<!--begin.rcode eval=FALSE
+# subset 사용
+subset(pf, !is.na(gender))
+end.rcode-->
+<ul>
+<li>subset(데이터세트, 조건식): 데이터세트에서 조건식을 충족하는 값만 출력</li>
+<li>논리 부정 연산자 <b>!</b> 사용하여, gender 컬럼에 na가 포함 되었으면 true를 반환하는 조건식을 부정하므로</li>
+<li>pf 데이터에서 gender 컬럼에 na가 포함 안된 값들을 data를 가지게끔 데이터세트를 구분한다는 뜻</li>
+</ul>
+<!--begin.rcode
+qplot(x = friend_count, data=subset(pf, !is.na(gender)), binwidth = 15) + scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + facet_wrap(~gender)
+end.rcode-->
+<br>
+<hr>
+<br>
+<h3>NA 제외하기: na.omit() 사용</h3>
+<ul>
+<li>앞서 살펴본 <code class="red">subset()</code> 이외에도 <code class="red">na.omit()</code> 명령문을 사용할 수 있다.</li>
+<li>모든 observations (데이터세트의 값들) 중에 NA를 가지는 값들을 제외하고 보여준다.</li>
+</ul>
+<!--begin.rcode
+qplot(x = friend_count, data=na.omit(pf), binwidth = 15) + scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + facet_wrap(~gender)
+end.rcode-->
+
+<ul>
+<li><font color="red"><b>주의사항</b></font> 무조건 NA값을 제외하므로 어떤 변수를 분석하냐에 따라 데이터 분석에 오류가 생길 수 있다.</li>
+</ul>
+</body>
+</html>
